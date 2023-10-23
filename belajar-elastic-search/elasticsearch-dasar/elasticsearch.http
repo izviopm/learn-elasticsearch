@@ -1,0 +1,253 @@
+### create index customers
+PUT http://localhost:9200/customers
+
+### create index products
+PUT http://localhost:9200/products
+
+### create index orders
+PUT http://localhost:9200/orders
+
+### show all indeces
+GET http://localhost:9200/_cat/indices?v
+
+### update customers mapping
+PUT http://localhost:9200/customers/_mapping
+Content-Type: application/json
+
+{
+    "date_detection": true,
+    "dynamic_date_formats": [
+        "yyyy-MM-dd HH:mm:ss",
+        "yyyy-MM-dd",
+        "yyyy/MM/dd HH:mm:ss",
+        "yyyy/MM/dd"
+    ]
+}
+
+### update customers mapping
+PUT http://localhost:9200/customers/_mapping
+Content-Type: application/json
+
+{
+    "numeric_detection": true
+}
+
+### get mapping customers
+GET http://localhost:9200/customers/_mapping
+
+### update products mapping
+PUT http://localhost:9200/products/_mapping
+Content-Type: application/json
+
+{
+    "date_detection": true,
+    "dynamic_date_formats": [
+        "yyyy-MM-dd HH:mm:ss",
+        "yyyy-MM-dd",
+        "yyyy/MM/dd HH:mm:ss",
+        "yyyy/MM/dd"
+    ]
+}
+
+### update products mapping
+PUT http://localhost:9200/products/_mapping
+Content-Type: application/json
+
+{
+    "numeric_detection": true
+}
+
+### get mapping products
+GET http://localhost:9200/products/_mapping
+
+### update orders mapping
+PUT http://localhost:9200/orders/_mapping
+Content-Type: application/json
+
+{
+    "date_detection": true,
+    "dynamic_date_formats": [
+        "yyyy-MM-dd HH:mm:ss",
+        "yyyy-MM-dd",
+        "yyyy/MM/dd HH:mm:ss",
+        "yyyy/MM/dd"
+    ]
+}
+
+### update orders mapping
+PUT http://localhost:9200/orders/_mapping
+Content-Type: application/json
+
+{
+    "numeric_detection": true
+}
+
+### get mapping orders
+GET http://localhost:9200/orders/_mapping
+
+
+### insert customer izvio
+POST http://localhost:9200/customers/_create/izvio
+Content-Type: application/json
+
+{
+    "name": "Izvio Prijaya Mumin",
+    "registered_at": "2023-02-22 15:40:00"
+}
+
+### get mapping customers
+GET http://localhost:9200/customers/_mapping
+
+### create product 1
+POST http://localhost:9200/products/_create/1
+Content-Type: application/json
+
+{
+    "name": "Indomie Goreng Ayam Bawang",
+    "price": "2000"
+}
+
+### create product 2
+POST http://localhost:9200/products/_create/2
+Content-Type: application/json
+
+{
+    "name": "Best Wok Mie Goreng Original",
+    "price": 2000
+}
+
+### get mapping products
+GET http://localhost:9200/products/_mapping
+
+### create orders 1
+POST http://localhost:9200/orders/_create/1
+Content-Type: application/json
+
+{
+    "order_date": "2023-10-06 10:25:20",
+    "customer_id": "izvio",
+    "total": "12000",
+    "items": [
+        {
+            "product_id": "1",
+            "price": "2000",
+            "quantity": "2"
+        },
+        {
+            "product_id": "2",
+            "price": "2000",
+            "quantity": "4"
+        }
+    ]
+}
+
+### get mapping orders
+GET http://localhost:9200/orders/_mapping
+
+### get customers meta data
+GET http://localhost:9200/customers/_doc/izvio
+
+### get products meta data
+GET http://localhost:9200/products/_doc/6
+
+### get customers source data
+GET http://localhost:9200/customers/_source/izvio
+
+### multi get products 1 and 2
+GET http://localhost:9200/products/_mget
+Content-Type: application/json
+
+{
+    "ids": [
+        "1",
+        "2"
+    ]
+}
+
+### get order 1 and customer izvio
+GET http://localhost:9200/_mget
+Content-Type: application/json
+
+{
+    "docs": [
+        {
+            "_id": "1",
+            "_index": "orders"
+        },
+        {
+            "_id": "izvio",
+            "_index": "customers"
+        }
+    ]
+}
+
+#The difference between a created API and an indexed API is that when the data already exists, the data will be updated, and there won't be an error in the response.
+### add product using index
+PUT http://localhost:9200/products/_doc/3
+Content-Type: application/json
+
+{
+    "name": "Zouya Barebone Keyboard GMK67",
+    "price": 750000
+}
+
+### add product using index
+PUT http://localhost:9200/products/_doc/4
+Content-Type: application/json
+
+{
+    "name": "Acer Predator XXI",
+    "price": 25000000
+}
+
+### add product using index
+PUT http://localhost:9200/products/_doc/5
+Content-Type: application/json
+
+{
+    "name": "Iphone 14 Pro 128Gb",
+    "price": 20000000
+}
+
+### add product using index
+PUT http://localhost:9200/products/_doc/6
+Content-Type: application/json
+
+{
+    "name": "Akko V3 Cream Blue Pro Switch (45pcs)",
+    "price": 250000
+}
+
+### get all data in index products
+GET http://localhost:9200/products/_search
+
+### update product 4
+POST http://localhost:9200/products/_update/4
+Content-Type: application/json
+
+{
+    "doc": {
+        "price": 30000000
+    }
+}
+
+### insert customer spammer
+POST http://localhost:9200/customers/_create/spammer
+Content-Type: application/json
+
+{
+    "name": "Spammer",
+    "register_at": "2023-01-01 00:00:00"
+}
+
+### get all data in index customers
+GET http://localhost:9200/customers/_search
+
+### delete customer spammer
+DELETE http://localhost:9200/customers/_doc/spammer
+
+### bulk documents
+POST http://localhost:9200/_bulk
+Content-Type: application/json
+
+< bulk.json
