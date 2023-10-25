@@ -338,3 +338,6 @@ GET http://localhost:9200/persons_v2/_search
 
 ### delete persons_v2
 DELETE http://localhost:9200/persons_v2
+
+### get all orders data
+GET http://localhost:9200/order/_search
