@@ -1,0 +1,14 @@
+{ "create" : { "_index": "persons", "_id": "1" } }
+{ "name": "Izvio Prijaya Mumin", "usia": "24" }
+{ "create" : { "_index": "persons", "_id": "2" } }
+{ "name": "Alif Muhammad Nuha", "usia": "24" }
+{ "create" : { "_index": "persons", "_id": "3" } }
+{ "name": "Egan Kusmaya Putra", "usia": "25" }
+{ "create" : { "_index": "persons", "_id": "4" } }
+{ "name": "Zyhevia Hasna Venadila Mumin", "usia": "17" }
+{ "create" : { "_index": "persons", "_id": "5" } }
+{ "name": "M Verzio Firdausi Mumin", "usia": "14" }
+{ "create" : { "_index": "persons", "_id": "6" } }
+{ "name": "Vinny Nayla Aqila", "usia": "6" }
+{ "create" : { "_index": "persons", "_id": "7" } }
+{ "name": "Zenal Muminin", "usia": "53" }

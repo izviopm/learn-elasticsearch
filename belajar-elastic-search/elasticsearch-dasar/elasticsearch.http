@@ -278,3 +278,63 @@ GET http://localhost:9200/_aliases
 
 ### get all data in index customers using alias
 GET http://localhost:9200/customer/_search
+
+### create index person
+PUT http://localhost:9200/persons
+
+### update persons mapping
+PUT http://localhost:9200/persons/_mapping
+Content-Type: application/json
+
+{
+    "numeric_detection": true
+}
+
+### get persons mapping
+GET http://localhost:9200/persons/_mapping
+
+### bulk documents
+POST http://localhost:9200/_bulk
+Content-Type: application/json
+
+< bulk2.json
+
+### get all persons data
+GET http://localhost:9200/persons/_search
+
+### create index person v2
+PUT http://localhost:9200/persons_v2
+
+### update persons mapping v2
+PUT http://localhost:9200/persons_v2/_mapping
+Content-Type: application/json
+
+{
+    "numeric_detection": true
+}
+
+### get persons mapping v2
+GET http://localhost:9200/persons_v2/_mapping
+
+### reindex persons_v2 from persons
+POST http://localhost:9200/_reindex
+Content-Type: application/json
+
+{
+    "source": {
+        "index": "persons"
+    },
+    "dest": {
+        "index": "persons_v2"
+    },
+    "script": {
+        "lang": "painless",
+        "source": "def usia = Integer.parseInt(ctx._source.usia); if (usia < 11) { ctx._source.kelompok_usia = 'Anak-anak'; } else if (usia < 20) { ctx._source.kelompok_usia = 'Remaja'; } else if (usia < 44) { ctx._source.kelompok_usia = 'Dewasa'; } else { ctx._source.kelompok_usia = 'Lansia'; }"
+    }
+}
+
+### get all persons_v2
+GET http://localhost:9200/persons_v2/_search
+
+### delete persons_v2
+DELETE http://localhost:9200/persons_v2
