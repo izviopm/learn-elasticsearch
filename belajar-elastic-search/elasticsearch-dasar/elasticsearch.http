@@ -341,3 +341,112 @@ DELETE http://localhost:9200/persons_v2
 
 ### get all orders data
 GET http://localhost:9200/order/_search
+
+### search order using includes
+GET http://localhost:9200/order/_search?_source_includes=total,customer_id,items.product_id
+
+### search order using excludes
+GET http://localhost:9200/order/_search?_source_excludes=items.price
+
+### create customers_v2
+PUT http://localhost:9200/customers_v2
+
+### update customers v2 mapping
+PUT http://localhost:9200/customers_v2/_mapping
+Content-Type: application/json
+
+{
+    "numeric_detection": true,
+    "date_detection": true,
+    "dynamic_date_formats": [
+        "yyyy-MM-dd HH:mm:ss",
+        "yyyy-MM-dd",
+        "yyyy/MM/dd HH:mm:ss",
+        "yyyy/MM/dd"
+    ],
+    "properties": {
+        "username": {
+            "type": "keyword"
+        },
+        "first_name": {
+            "type": "text"
+        },
+        "last_name": {
+            "type": "text"
+        },
+        "email": {
+            "type": "keyword"
+        },
+        "gender": {
+            "type": "keyword"
+        },
+        "birth_date": {
+            "type": "date",
+            "format": "yyyy-MM-dd"
+        }
+    }
+}
+
+### get mapping customers_v2
+GET http://localhost:9200/customers_v2/_mapping
+
+### switch alias from customers to customers_v2
+POST http://localhost:9200/_aliases
+Content-Type: application/json
+
+{
+    "actions": [
+        {
+            "remove": {
+                "alias": "customer",
+                "index": "customers"
+            }
+        },
+        {
+            "add": {
+                "alias": "customer",
+                "index": "customers_v2"
+            }
+        }
+    ]
+}
+
+### get aliases
+GET http://localhost:9200/_aliases
+
+### search customer
+GET http://localhost:9200/customer/_search
+
+### bulk insert customers
+POST http://localhost:9200/_bulk
+Content-Type: application/json
+
+< customers.json
+
+### update customers v2 mapping
+PUT http://localhost:9200/customers_v2/_mapping
+Content-Type: application/json
+
+{
+    "properties": {
+        "address": {
+            "properties": {
+                "street": {
+                    "type": "text"
+                },
+                "city": {
+                    "type": "text"
+                },
+                "province": {
+                    "type": "text"
+                },
+                "country": {
+                    "type": "text"
+                },
+                "zip_code": {
+                    "type": "keyword"
+                },
+            }
+        }
+    }
+}
