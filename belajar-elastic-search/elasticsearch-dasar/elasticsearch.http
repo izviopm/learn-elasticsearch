@@ -445,8 +445,242 @@ Content-Type: application/json
                 },
                 "zip_code": {
                     "type": "keyword"
-                },
+                }
             }
+        }
+    }
+}
+
+### bulk insert customers
+POST http://localhost:9200/_bulk
+Content-Type: application/json
+
+< customers-with-addresses.json
+
+### update customers v2 mapping
+PUT http://localhost:9200/customers_v2/_mapping
+Content-Type: application/json
+
+{
+    "properties": {
+        "hobbies": {
+            "type": "text"
+        },
+        "banks": {
+            "properties": {
+                "name": {
+                    "type": "text"
+                },
+                "account_number": {
+                    "type": "keyword"
+                }
+            }
+        }
+    }
+}
+
+### bulk insert customers
+POST http://localhost:9200/_bulk
+Content-Type: application/json
+
+< customers-with-banks.json
+
+### Search customer using match all
+GET http://localhost:9200/customer/_search
+Content-Type: application/json
+
+{
+    "query": {
+        "match_all": {}
+    }
+}
+
+### Search customer using match all
+POST http://localhost:9200/customer/_search
+Content-Type: application/json
+
+{
+    "query": {
+        "match_all": {}
+    },
+    "size": 5,
+    "from": 0,
+    "sort": [
+        {
+            "username": {
+                "order": "desc"
+            }
+        }
+    ]
+}
+
+# query term bersifat case sensitive sehingga kata Female != female dan tipe data yang cocok digunakan adalah keyword
+### search customer where gender = 'Female' 
+POST http://localhost:9200/customer/_search
+Content-Type: application/json
+
+{
+    "query": {
+        "term": {
+            "gender": "Female"
+        }
+    },
+    "size": 5,
+    "from": 0,
+    "sort": [
+        {
+            "username": {
+                "order": "desc"
+            }
+        }
+    ]
+}
+
+# query match incase sensitife cocok untuk melakukan pencarian pada tipe data text
+### search customer where banks.name = 'BCA' 
+POST http://localhost:9200/customer/_search
+Content-Type: application/json
+
+{
+    "query": {
+        "match": {
+            "banks.name": "bca"
+        }
+    },
+    "size": 5,
+    "from": 0,
+    "sort": [
+        {
+            "username": {
+                "order": "desc"
+            }
+        }
+    ]
+}
+
+# query match incase sensitife cocok untuk melakukan pencarian pada tipe data text
+### search customer where banks.name = 'BCA Digital' 
+POST http://localhost:9200/customer/_search
+Content-Type: application/json
+
+{
+    "query": {
+        "match": {
+            "banks.name": {   
+                "query": "bca digital",
+                "operator": "AND"
+            }
+        }
+    },
+    "size": 5,
+    "from": 0,
+    "sort": [
+        {
+            "username": {
+                "order": "desc"
+            }
+        }
+    ]
+}
+
+# query term bersifat case sensitive sehingga kata Female != female dan tipe data yang cocok digunakan adalah keyword
+### search customer where username in ('username1', 'username2', 'username3')
+POST http://localhost:9200/customer/_search
+Content-Type: application/json
+
+{
+    "query": {
+        "terms": {
+            "username": [
+                "username1",
+                "username2",
+                "username3"
+            ]
+        }
+    }
+}
+
+### search customer where hobbies = 'gaming' AND banks.name = 'bca'
+POST http://localhost:9200/customer/_search
+Content-Type: application/json
+
+{
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "term": {
+                        "hobbies": "gaming"
+                    }
+                },
+                {
+                    "match": {
+                        "banks.name": {
+                            "query": "bca digital",
+                            "operator": "AND"
+                        }
+                    }
+                }
+            ]
+        }
+    }
+}
+
+### search customer where hobbies = 'gaming' AND banks.name = 'bca' using filter
+POST http://localhost:9200/customer/_search
+Content-Type: application/json
+
+{
+    "query": {
+        "bool": {
+            "filter": [
+                {
+                    "term": {
+                        "hobbies": "gaming"
+                    }
+                },
+                {
+                    "match": {
+                        "banks.name": {
+                            "query": "bca digital",
+                            "operator": "AND"
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "sort": [
+        {
+            "username" : {
+                "order": "desc"
+            }
+        }
+    ]
+}
+
+### search customer where hobbies != 'gaming' AND banks.name != 'bca digital'
+POST http://localhost:9200/customer/_search
+Content-Type: application/json
+
+{
+    "query": {
+        "bool": {
+            "must_not": [
+                {
+                    "term": {
+                        "hobbies": "gaming"
+                    }
+                },
+                {
+                    "match": {
+                        "banks.name": {
+                            "query": "bca digital",
+                            "operator": "AND"
+                        }
+                    }
+                }
+            ]
         }
     }
 }
